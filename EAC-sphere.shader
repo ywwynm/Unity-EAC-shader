@@ -59,57 +59,66 @@ Shader "Custom/EAC-sphere"
 				float u = 0;
 				float v = 0;
 
-				if (la >= 0.25 * pi && la <= 0.75 * pi) { // left, front, right and back
-					if (lo <= 1.25 * pi) {
-						u = 5.0 - 4.0 * lo / pi;
-						v = 5.0 - 4.0 * la / pi;
+        float D_1_4_M_PI = 0.785398163397448309615;
+        float D_3_4_M_PI = 2.356194490192344928845;
+        float D_5_4_M_PI = 3.926990816987241548075;
+        float D_7_4_M_PI = 5.497787143782138167305;
+        float D_1_2_M_PI = 1.570796326794896619230;
+        float D_3_2_M_PI = 4.712388980384689857690;
+        float M_2_PI     = 6.283185307179586476920;
+        float D_4_PI     = 1.273239544735162686152;
+
+				if (la >= D_1_4_M_PI && la <= D_3_4_M_PI) { // left, front, right and back
+					if (lo <= D_5_4_M_PI) {
+						u = 5.0 - D_4_PI * lo;
+						v = 5.0 - D_4_PI * la;
 					} else if (lo >= 1.75 * pi && lo <= 2.0 * pi) {
-						u = 13.0 - 4.0 * lo / pi;
-						v = 5.0 - 4.0 * la / pi;
+						u = 13.0 - D_4_PI * lo;
+						v = 5.0  - D_4_PI * la;
 					} else { // back
-						v = 4.0 * lo / pi - 5.0;
-            u = 5.0 - 4.0 * la / pi;
+						v = D_4_PI * lo - 5.0;
+            u = 5.0 - D_4_PI * la;
 					}
-				} else if (la < 0.25 * pi) {
-					float t = la * 4.0 / pi;
-					if (lo <= 0.25 * pi) {
+				} else if (la < D_1_4_M_PI) { // top
+					float t = la * D_4_PI;
+					if (lo <= D_1_4_M_PI) {
 						v = 1 + t;
-						u = 5 + lo * 4 * t / pi;
-					} else if (lo <= 0.75 * pi) {
+						u = 5 + lo * t * D_4_PI;
+					} else if (lo <= D_3_4_M_PI) {
 						u = 5 + t;
-						v = 1 + (0.5 * pi - lo) * 4 * t / pi;
-					} else if (lo <= 1.25 * pi) {
+						v = 1 + (D_1_2_M_PI - lo) * t * D_4_PI;
+					} else if (lo <= D_5_4_M_PI) {
 						v = 1 - t;
-						u = 5 + (pi - lo) * 4 * t / pi;
-					} else if (lo <= 1.75 * pi) {
+						u = 5 + (pi - lo) * t * D_4_PI;
+					} else if (lo <= D_7_4_M_PI) {
 						u = 5 - t;
-						v = 1 + (lo - 1.5 * pi) * 4 * t / pi;
+						v = 1 + (lo - D_3_2_M_PI) * t * D_4_PI;
 					} else {
 						v = 1 + t;
-						u = 5 - (2 * pi - lo) * 4 * t / pi;
+						u = 5 - (M_2_PI - lo) * t * D_4_PI;
 					}
 				} else { // bottom
-					float t = 4.0 - la * 4 / pi;
-					if (lo <= 0.25 * pi) {
+					float t = 4.0 - la * D_4_PI;
+					if (lo <= D_1_4_M_PI) {
 						v = 1 + t;
-						u = 1 - t * lo * 4 / pi;
-					} else if (lo <= 0.75 * pi) {
+						u = 1 - t * lo * D_4_PI;
+					} else if (lo <= D_3_4_M_PI) {
 						u = 1 - t;
-						v = 1 - (lo - 0.5 * pi) * 4 * t / pi;
-					} else if (lo <= 1.25 * pi) {
+						v = 1 - (lo - D_1_2_M_PI) * t * D_4_PI;
+					} else if (lo <= D_5_4_M_PI) {
 						v = 1 - t;
-						u = 1 - (pi - lo) * 4 * t / pi;
-					} else if (lo <= 1.75 * pi) {
+						u = 1 - (pi - lo) * t * D_4_PI;
+					} else if (lo <= D_7_4_M_PI) {
 						u = 1 + t;
-						v = 1 + (lo - 1.5 * pi) * 4 * t / pi;
+						v = 1 + (lo - D_3_2_M_PI) * t * D_4_PI;
 					} else {
 						v = 1 + t;
-						u = 1 + (2.0 * pi - lo) * 4 * t / pi;
+						u = 1 + (M_2_PI - lo) * t * D_4_PI;
 					}
 				}
 
 				u = u / 6.0;
-				v = v / 4.0;
+				v = v * 0.25;
 				
         return tex2D(_MainTex, float2(u, v));
 			}
