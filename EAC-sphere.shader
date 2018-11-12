@@ -59,104 +59,51 @@ Shader "Custom/EAC-sphere"
 				float u = 0;
 				float v = 0;
 
-				if (la >= 0.25 * pi && la <= 0.75 * pi) {
-					if (lo >= 0 && lo <= 0.25 * pi) {
-						u = 5.0 - tan(lo);
-					} else if (lo >= 0.25 * pi && lo <= 0.5 * pi) {
+				if (la >= 0.25 * pi && la <= 0.75 * pi) { // left, front, right and back
+					if (lo >= 0.25 * pi && lo <= 0.75 * pi) { // front
 						u = 3.0 + tan(0.5 * pi - lo);
-					} else if (lo >= 0.5 * pi && lo <= 0.75 * pi) {
-						u = 3.0 - tan(lo - 0.5 * pi);
-					} else if (lo >= 0.75 * pi && lo <= pi) {
+					} else if (lo >= 0.75 * pi && lo <= 1.25 * pi) { // left
 						u = 1.0 + tan(pi - lo);
-					} else if (lo >= pi && lo <= 1.25 * pi) {
-						u = 1.0 - tan(lo - pi);
-					} else if (lo >= 1.75 * pi && lo <= 2 * pi) {
-						u = 5.0 + tan(2 * pi - lo);
-					} else if (lo >= 1.25 * pi && lo <= 1.5 * pi) {
-						v = 1.0 - tan(1.5 * pi - lo);
-					} else {
-						v = 1.0 + tan(lo - 1.5 * pi);
+					} else if (lo >= 1.25 * pi && lo <= 1.75 * pi) { // back
+            v = 1.0 + tan(lo - 1.5 * pi);
+          } else { // [0, 0.25pi] and [1.75pi, 2pi], right
+						u = 5.0 - tan(lo);
 					}
-				}
-				if (la >= 0.25 * pi && la <= 0.5 * pi) {
-					if ((lo >= 0 && lo <= 1.25 * pi) || (lo >= 1.75 * pi && lo <= 2 * pi)) {
+
+          if ((lo >= 0 && lo <= 1.25 * pi) || (lo >= 1.75 * pi && lo <= 2 * pi)) { // left, front and right
 						v = 3.0 + tan(0.5 * pi - la);
-					} else {
+					} else { // back
 						u = 3.0 + tan(0.5 * pi - la);
 					}
-				} else if (la >= 0.5 * pi && la <= 0.75 * pi) {
-					if ((lo >= 0 && lo <= 1.25 * pi) || (lo >= 1.75 * pi && lo <= 2 * pi)) {
-						v = 3.0 - tan(la - 0.5 * pi);
-					} else {
-						u = 3.0 - tan(la - 0.5 * pi);
+				} else if (la <= 0.25 * pi) { // top
+          float t = tan(la);
+					if (lo >= 0.25 * pi && lo <= 0.75 * pi) { // right quarter of texture square, top of front direction
+						u = 5.0 + t;
+            v = 1.0 + t * tan(0.5 * pi - lo);
+					} else if (lo >= 0.75 * pi && lo <= 1.25 * pi) { // bottom quarter of texture square, top of left direction
+						u = 5.0 - t * tan(lo - pi);
+						v = 1.0 - t;
+					} else if (lo >= 1.25 * pi && lo <= 1.75 * pi) { // left quarter of texture square, top of back direction
+						u = 5.0 - t;
+						v = 1.0 - t * tan(1.5 * pi - lo);
+					} else { // top quarter of texture square, top of right direction
+						u = 5.0 + t * tan(lo);
+						v = 1.0 + t;
 					}
-				} else if (la <= 0.25 * pi) {
-					if (lo >= 0.25 * pi && lo <= 0.75 * pi) {
-						u = 5.0 + tan(la);
-						float tx = u - 5.0; // if x of center of this face is 0, and right is positive direction
-						if (lo <= 0.5 * pi) {
-							v = tx * tan(pi / 2.0 - lo) + 1.0;
-						} else {
-							v = 1.0 - tx * tan(lo - pi / 2.0);
-						}
-					} else if (lo >= 0.75 * pi && lo <= 1.25 * pi) {
-						v = 1.0 - tan(la);
-						float ty = 1.0 - v; // if y of center of this face is 0, and down is positive direction
-						if (lo <= pi) {
-							u = 5.0 + ty * tan(pi - lo);
-						} else {
-							u = 5.0 - ty * tan(lo - pi);
-						}
-					} else if (lo >= 1.25 * pi && lo <= 1.75 * pi) {
-						u = 5.0 - tan(la);
-						float tx = 5.0 - u;
-						if (lo <= 1.5 * pi) {
-							v = 1.0 - tx * tan(1.5 * pi - lo);
-						} else {
-							v = 1.0 + tx * tan(lo - 1.5 * pi);
-						}
-					} else {
-						v = 1.0 + tan(la);
-						float ty = v - 1.0;
-						if (lo <= 0.25 * pi) {
-							u = 5.0 + ty * tan(lo);
-						} else {
-							u = 5.0 - ty * tan(2 * pi - lo);
-						}
-					}
-				} else {
-					if (lo >= 0.25 * pi && lo <= 0.75 * pi) {
-						u = 1.0 - tan(pi - la);
-						float tx = 1.0 - u;
-						if (lo <= 0.5 * pi) {
-							v = 1.0 + tx * tan(pi / 2.0 - lo);
-						} else {
-							v = 1.0 - tx * tan(lo - pi / 2.0);
-						}
-					} else if (lo >= 0.75 * pi && lo <= 1.25 * pi) {
-						v = 1.0 - tan(pi - la);
-						float ty = 1.0 - v;
-						if (lo <= pi) {
-							u = 1.0 - ty * tan(pi - lo);
-						} else {
-							u = 1.0 + ty * tan(lo - pi);
-						}
-					} else if (lo >= 1.25 * pi && lo <= 1.75 * pi) {
-						u = 1.0 + tan(pi - la);
-						float tx = u - 1.0;
-						if (lo <= 1.5 * pi) {
-							v = 1.0 - tx * tan(1.5 * pi - lo);
-						} else {
-							v = 1.0 + tx * tan(lo - 1.5 * pi);
-						}
-					} else {
-						v = 1.0 + tan(pi - la);
-						float ty = v - 1.0;
-						if (lo <= 0.25 * pi) {
-							u = 1.0 - ty * tan(lo);
-						} else {
-							u = 1.0 + ty * tan(2.0 * pi - lo);
-						}
+				} else { // bottom
+          float t = tan(pi - la);
+					if (lo >= 0.25 * pi && lo <= 0.75 * pi) { // left quarter of texture square, bottom of front direction
+						u = 1.0 - t;
+            v = 1.0 - t * tan(lo - 0.5 * pi);
+					} else if (lo >= 0.75 * pi && lo <= 1.25 * pi) { // bottom quarter of texture square, bottom of left direction
+						v = 1.0 - t;
+            u = 1.0 - t * tan(pi - lo);
+					} else if (lo >= 1.25 * pi && lo <= 1.75 * pi) { // right quarter of texture square, bottom of back direction
+						u = 1.0 + t;
+            v = 1.0 + t * tan(lo - 1.5 * pi);
+					} else { // top quarter of texture square, bottom of right direction
+						v = 1.0 + t;
+						u = 1.0 + t * tan(2.0 * pi - lo);
 					}
 				}
 
