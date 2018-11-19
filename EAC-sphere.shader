@@ -26,14 +26,14 @@ Shader "Custom/EAC-sphere"
 			struct v2f
 			{
         float4 vertex : SV_POSITION;
-				float3 normal_uv : TEXCOORD0;
+				float3 coord : TEXCOORD0;
 			};
 
 			v2f vert (appdata v)
 			{
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.normal_uv = v.normal;
+				o.coord = v.normal;
 				return o;
 			}
 			
@@ -41,7 +41,7 @@ Shader "Custom/EAC-sphere"
 
 			float4 frag (v2f i) : SV_Target {
 				float pi = UNITY_PI;
-				float3 xyz = normalize(i.normal_uv);
+				float3 xyz = normalize(i.coord);
 				float x = xyz.x, y = xyz.y, z = xyz.z;
 
 				float u = 0, v = 0;
