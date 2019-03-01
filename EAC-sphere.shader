@@ -75,7 +75,7 @@ Shader "Custom/EAC-sphere"
 					}
 				}
 
-				return tex2D(_MainTex, float2(u / 6.0, 1 - v / 4.0));
+				return tex2D(_MainTex, float2(u / 6.0, 1.0 - v / 4.0));
 			}
 
 			ENDCG
